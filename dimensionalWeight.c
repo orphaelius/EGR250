@@ -104,12 +104,6 @@ void getDimensions(float* length, float* width, float* height) {
 	Description: Calculates volume of package
 	Parameters: Points to length, width, height, and volume
 	Return: *Volume
-
-	Question on pointers: If I've used them in something like getDimensions()
-		above, do I need to repeatedly pass them by reference to functions going
-		forward if I don't directly modify the values, or can I just pass by value
-		after my initial modification? I just want to make sure I'm not being 
-		redundant in how I am using them.
 *******************************************************************************/
 float getVolume(float* length, float* width, float* height, float* volume) {
 	*volume = (*length) * (*width) * (*height);
