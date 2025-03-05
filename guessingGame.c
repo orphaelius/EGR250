@@ -60,8 +60,7 @@ int main(void) {
         roundStatus = getRoundStatus(&roundStatus, playerGuess, &randomNum, 
             &totalGuesses); 
         // Uses return value of roundStatus as an index to print certain 
-        // messages. Not sure if this is bad practice-- just thought it worked
-        // here. Let me know your thoughts if you have time!
+        // messages
         printf("%s", messages[roundStatus]); 
 
         if (roundStatus == 2) {
