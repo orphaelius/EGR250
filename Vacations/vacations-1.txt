@@ -1,0 +1,100 @@
+Orlando, Florida, US
+342
+8
+847
+0
+Cancun, Mexico
+459
+10
+3168.2
+1
+Paris, France
+414
+20
+3828
+1
+Boston, Massachusettes, US
+313
+6
+437.8
+0
+Los Angeles, California, US
+185
+5
+2668.6
+0
+Oranjestad, Aruba
+38
+28
+1873
+1
+Nukualofa, Tonga
+86
+30
+7545
+1
+Barcelona, Spain
+264
+14
+4030
+1
+Dallas, Texas, US
+287
+3
+1328.4
+0
+Minneapolis, Minnesota, US
+239
+5
+1115.5
+0
+Casablanca, Morocco
+74
+16
+3874
+1
+Toronto, Canada
+564
+4
+481
+1
+Anchorage, Alaska, US
+191
+14
+4273.3
+0
+Nova Scotia, Canada
+142
+5
+1088.1
+1
+Nashville, Tennessee, US
+293
+3
+665.5
+0
+Mackinaw City, Michigan, US
+99
+7
+795.4
+0
+New York, New York, US
+292
+3
+239.7
+0
+Tokyo, Japan
+511
+30
+6771
+1
+Tengah, Singapore
+82
+15
+9648
+1
+Rome, Italy
+211
+20
+4481
+1
