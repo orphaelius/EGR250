@@ -67,6 +67,9 @@ void displayHigherValue(STOCK allStockData[]);
 void displayIncreaseDecrease(STOCK allStockData[]);
 void displayPortfolioValue(STOCK allStockData[]);
 void searchByLocation(STOCK allStockData[]);
+void searchForCEO(STOCK allStockData[]);
+void searchCEOCompRange(STOCK allStockData[]);
+void highestCEOcomp(STOCK allStockData[]);
 
 /*******************************************************************************
 	Function: main()
@@ -78,13 +81,13 @@ int main(void) {
 	STOCK allStockData[COMPANIES];
 
 	displayProgramHeader();
-	readStockData(allStockData);	
-	
+	readStockData(allStockData);
+
 	displayAllData(allStockData);
 	displayCEOinfo(allStockData);
 
-	searchStockBySymbol(allStockData);  
-	searchPortionStockName(allStockData);  
+	searchStockBySymbol(allStockData);
+	searchPortionStockName(allStockData);
 	displayHigherPrice(allStockData);
 
 	displayLowerValue(allStockData);
@@ -92,11 +95,20 @@ int main(void) {
 
 	displayIncreaseDecrease(allStockData);
 	displayPortfolioValue(allStockData);
+
+	searchByLocation(allStockData);
+	searchForCEO(allStockData);
+
+	searchCEOCompRange(allStockData);
+	highestCEOcomp(allStockData);
+
+
+
 }
 // remove print statements, tidy
 /*******************************************************************************
 	Function: readStockData()
-	Description: Reads all data from data file, stockdataFINAL.txt, assigns 
+	Description: Reads all data from data file, stockdataFINAL.txt, assigns
 	values to array of structures, allStockData[]
 	Parameters: STOCK allStockData[]
 	Return: ---
@@ -107,44 +119,44 @@ void readStockData(STOCK allStockData[]) {
 	char tempStockChange[2];
 
 	for (size_t i = 0; i < COMPANIES; ++i) {
-		
+
 		// Get city name, null terminate
 		fgets(allStockData[i].location.city, CITYCHAR, infile);
-		allStockData[i].location.city[strlen(allStockData[i].location.city) - 1] = '\0';		
+		allStockData[i].location.city[strlen(allStockData[i].location.city) - 1] = '\0';
 
 		// Get state abbreviation, null terminate
 		fgets(allStockData[i].location.state, STATECHAR, infile);
-		allStockData[i].location.state[strlen(allStockData[i].location.state) - 1] = '\0';		
+		allStockData[i].location.state[strlen(allStockData[i].location.state) - 1] = '\0';
 
 		// Get CEO name, null terminate
 		fgets(allStockData[i].CEO.name, NAMEMAX, infile);
-		allStockData[i].CEO.name[strlen(allStockData[i].CEO.name) - 1] = '\0';		
+		allStockData[i].CEO.name[strlen(allStockData[i].CEO.name) - 1] = '\0';
 
 		// Scan totalComp
 		fscanf(infile, "%d", &allStockData[i].CEO.totalComp);
-		fgets(endOfLine, 10, infile);		
+		fgets(endOfLine, 10, infile);
 
 		// Get stock name, null terminate
 		fgets(allStockData[i].stockName, NAMEMAX, infile);
-		allStockData[i].stockName[strlen(allStockData[i].stockName) - 1] = '\0';		
+		allStockData[i].stockName[strlen(allStockData[i].stockName) - 1] = '\0';
 
 		// Get stock abbreviation, null terminate
 		fgets(allStockData[i].stockSym, SYMBCHAR, infile);
-		allStockData[i].stockSym[strlen(allStockData[i].stockSym) - 1] = '\0';		
-		
+		allStockData[i].stockSym[strlen(allStockData[i].stockSym) - 1] = '\0';
+
 		// Get stockChangeString, null terminate, tokenize, convert to float, etc
 		fgets(allStockData[i].stockChangeString, NAMEMAX, infile);
 		allStockData[i].stockChangeString[strlen(allStockData[i].stockChangeString) - 1] = '\0';
 		int j = 0;
-		char* token = strtok(allStockData[i].stockChangeString, ","); 
-		while (token != NULL && j < 2) { 			
-			allStockData[i].stockChange[j] = atof(token);			
-			token = strtok(NULL, ",");		
+		char* token = strtok(allStockData[i].stockChangeString, ",");
+		while (token != NULL && j < 2) {
+			allStockData[i].stockChange[j] = atof(token);
+			token = strtok(NULL, ",");
 			j++;
-		}		
-		
+		}
+
 		// Get number shares
-		fscanf(infile, "%d", &allStockData[i].numShares);		
+		fscanf(infile, "%d", &allStockData[i].numShares);
 		fgets(endOfLine, 10, infile);
 	}
 } // End readStockData()
@@ -157,15 +169,15 @@ void readStockData(STOCK allStockData[]) {
 	Return: ---
 *******************************************************************************/
 void displayAllData(STOCK allStockData[]) {
-	printHeaderLines(); 
+	printHeaderLines();
 	printf("%-25s %-20s %-20s %-20s %-20s %-20s %-20s %-20s %-20s\n", "Company", "City", "State", "CEO", "CEO Total Comp", "Stock Abbreviation", "Last Stock Price", "Current Stock Price", "Number of Shares");
 	printHeaderLines();
-	for (size_t i = 0; i < COMPANIES; ++i) {	
+	for (size_t i = 0; i < COMPANIES; ++i) {
 		printf("%-20s", allStockData[i].stockName);
 		printf("%-20s", allStockData[i].location.city);
 		printf("%-20s", allStockData[i].location.state);
 		printf("%-20s", allStockData[i].CEO.name);
-		printf("%-20d", allStockData[i].CEO.totalComp);		
+		printf("%-20d", allStockData[i].CEO.totalComp);
 		printf("%-20s", allStockData[i].stockSym);
 		printf("%-20f%-20f", allStockData[i].stockChange[0], allStockData[i].stockChange[1]);
 		printf("%-20d", allStockData[i].numShares);
@@ -179,7 +191,7 @@ void displayAllData(STOCK allStockData[]) {
 	Parameters: STOCK allStockData[], int i (current counter)
 	Return: ---
 *******************************************************************************/
-void displaySingleStockdata(STOCK allStockData[], int i) { 
+void displaySingleStockdata(STOCK allStockData[], int i) {
 	printHeaderLines();
 	printf("%-25s %-20s %-20s %-20s %-20s %-20s %-20s %-20s %-20s\n", "Company", "City", "State", "CEO", "CEO Total Comp", "Stock Abbreviation", "Last Stock Price", "Current Stock Price", "Number of Shares");
 	printHeaderLines();
@@ -202,12 +214,12 @@ void displaySingleStockdata(STOCK allStockData[], int i) {
 *******************************************************************************/
 void displayCEOinfo(STOCK allStockData[]) {
 	printHeaderLines();
-	printf("%-25s %-20s %-20s %-20s\n", "Company","CEO", "City", "State");
+	printf("%-25s %-20s %-20s %-20s\n", "Company", "CEO", "City", "State");
 	for (size_t i = 0; i < COMPANIES; ++i) {
 		printf("%-20s", allStockData[i].stockName);
 		printf("%-20s", allStockData[i].CEO.name);
 		printf("%-20s", allStockData[i].location.city);
-		printf("%-20s", allStockData[i].location.state);		
+		printf("%-20s", allStockData[i].location.state);
 		puts("");
 	}
 } // End displayCEOinfo()
@@ -238,8 +250,8 @@ void searchStockBySymbol(STOCK allStockData[]) {
 		//search = strstr(allStockData[i].stockSym, inputSymbol);
 
 		if (strcmp(inputSymbol, allStockData[i].stockSym) == 0) {
-			printf("%s is in your portfolio!\n", allStockData[i].stockSym); 
-			found = 1;			
+			printf("%s is in your portfolio!\n", allStockData[i].stockSym);
+			found = 1;
 		}
 	}
 
@@ -255,7 +267,7 @@ void searchStockBySymbol(STOCK allStockData[]) {
 	Parameters: STOCK allStockData[]
 	Return: ---
 *******************************************************************************/
-void searchPortionStockName(STOCK allStockData[]) {	
+void searchPortionStockName(STOCK allStockData[]) {
 	char inputStockName[NAMEMAX] = { "" };
 	char* search;
 	int found = 0;
@@ -293,32 +305,32 @@ void displayHigherPrice(STOCK allStockData[]) {
 	printf("Enter a stock value and I will return all stocks with a higher current value: ");
 	scanf("%d", &inputHigh);
 
-	for (size_t i = 0; i < COMPANIES; ++i) {		
-		
+	for (size_t i = 0; i < COMPANIES; ++i) {
+
 		if (allStockData[i].stockChange[1] > inputHigh) {
 			found++;
 			if (found == 1) { // Print match message once
 				printf("Stocks with a higher current value:\n");
 			}
-			printf("%s\n", allStockData[i].stockName);			
-		}		
+			printf("%s\n", allStockData[i].stockName);
+		}
 	}
 
 	if (!found) { // Print match message once
-		printf("No stocks are currently higher than that value.\n"); 
+		printf("No stocks are currently higher than that value.\n");
 	}
-	
+
 } // End displayHighterPrice()
 
 /*******************************************************************************
 	Function: displayLowerPrice()
-	Description: Compares stock values and displays any stocks whose values have 
+	Description: Compares stock values and displays any stocks whose values have
 	diminished since purchase
 	Parameters: STOCK allStockData[]
 	Return: ---
 *******************************************************************************/
 void displayLowerValue(STOCK allStockData[]) {
-	 
+
 	int found = 0;
 	for (size_t i = 0; i < COMPANIES; ++i) {
 
@@ -328,7 +340,7 @@ void displayLowerValue(STOCK allStockData[]) {
 				printf("Stocks that have lost value since purchase:\n");
 			}
 			printf("%-20s%-20s%-20s", "Stock", "Purchase Price", "Current Value");
-			printf("%-20s%-20f%-20f\n", allStockData[i].stockName, allStockData[i].stockChange[0], allStockData[i].stockChange[1]); 
+			printf("%-20s%-20f%-20f\n", allStockData[i].stockName, allStockData[i].stockChange[0], allStockData[i].stockChange[1]);
 		}
 	}
 
@@ -354,8 +366,8 @@ void displayHigherValue(STOCK allStockData[]) {
 			found++;
 			if (found == 1) { // Print match message once
 				printf("Stocks that have gained value since purchase:\n");
-				printf("%-20s%-20s%-20s\n", "Stock", "Purchase Price", "Current Value"); 
-			}			
+				printf("%-20s%-20s%-20s\n", "Stock", "Purchase Price", "Current Value");
+			}
 			printf("%-20s%-20f%-20f\n", allStockData[i].stockName, allStockData[i].stockChange[0], allStockData[i].stockChange[1]);
 		}
 	}
@@ -366,11 +378,9 @@ void displayHigherValue(STOCK allStockData[]) {
 
 } // End displayHigherValue()
 
-// dsplay stock symbols and price increase or decrease by percentage
-// formula is (now - then) / then
 /*******************************************************************************
 	Function: displayIncreaseDecrease()
-	Description: Determines percent difference beteween purchase price and 
+	Description: Determines percent difference beteween purchase price and
 	current value, displays stock symbols and relevant percentage changes
 	Parameters: STOCK allStockData[]
 	Return: ---
@@ -379,28 +389,42 @@ void displayIncreaseDecrease(STOCK allStockData[]) {
 	float percentChange = 0.0;
 	printf("%-20s%-20s\n", "Stock Symbol", "Percent Change");
 	for (size_t i = 0; i < COMPANIES; ++i) {
-		percentChange = (allStockData[i].stockChange[1] - allStockData[i].stockChange[0]) / allStockData[i].stockChange[0]; 
-		percentChange *= 100;  
-		printf("%-20s%20.1f%%\n", allStockData[i].stockSym, percentChange); 		
+		percentChange = (allStockData[i].stockChange[1] - allStockData[i].stockChange[0]) / allStockData[i].stockChange[0];
+		percentChange *= 100;
+		printf("%-20s%20.1f%%\n", allStockData[i].stockSym, percentChange);
 	}
 } // End displayIncreaseDecrease()
 
 // displays all stocks, their inividual shares, and the total sum of all shares * price now
-// WHEN YOU ASK FOR INDIVIDUAL AMOUNTS, DO YOU MEAN AMOUNT OF SHARES, AMOUNT OF CURRENT VALUES?
+// WHEN YOU ASK FOR INDIVIDUAL AMOUNTS, DO YOU MEAN AMOUNT OF SHARES, AMOUNT OF CURRENT VALUES? ----------------------------------------------------------------------------------------
+
+/*******************************************************************************
+	Function: displayPortfolioValue()
+	Description: Displays portfolio percentage changes and total sum value
+	Parameters: STOCK allStockData[]
+	Return: ---
+*******************************************************************************/
 void displayPortfolioValue(STOCK allStockData[]) {
 	float tempSum = 0.0;
-	float totalSum = 0.0; 
+	float totalSum = 0.0;
 
 	printf("%-20s%-20s%-20s\n", "Stock", "Total Shares", "Total Value");
 	for (size_t i = 0; i < COMPANIES; ++i) {
-		tempSum = allStockData[i].stockChange[1] * allStockData[i].numShares; 		
-		totalSum += tempSum;		
+		tempSum = allStockData[i].stockChange[1] * allStockData[i].numShares;
+		totalSum += tempSum;
 		printf("%-20s%-20d%\n", allStockData[i].stockName, allStockData[i].numShares);
 	}
 
 	printf("%60f\n", totalSum);
-}
+} // End displayPortfolioValue()
 
+/*******************************************************************************
+	Function: searchByLocation()
+	Description: Allows user to search for company location data using user
+	input and strstr()
+	Parameters: STOCK allStockData[]
+	Return: ---
+*******************************************************************************/
 void searchByLocation(STOCK allStockData[]) {
 	char endLine[10];
 	fgets(endLine, 10, stdin);
@@ -409,8 +433,8 @@ void searchByLocation(STOCK allStockData[]) {
 	char* search;
 	int found = 0;
 	printf("Enter any portion of city or state to search for companies in those jurisdictions: ");
-	fgets(inputLocation, CITYCHAR, stdin); 
-	inputLocation[strlen(inputLocation) - 1] = '\0'; 
+	fgets(inputLocation, CITYCHAR, stdin);
+	inputLocation[strlen(inputLocation) - 1] = '\0';
 
 	printf("You entered: %s\n", inputLocation);
 	printf("Searching...\n");
@@ -432,16 +456,21 @@ void searchByLocation(STOCK allStockData[]) {
 	if (!found) {
 		printf("No company matches %s\n", inputLocation);
 	}
-}
+} // End searchByLocation()
 
+/*******************************************************************************
+	Function: searchForCEO()
+	Description: Allows user to input any portion of a CEO name to search for
+	that CEO using strstr()
+	Parameters: STOCK allStockData[]
+	Return: ---
+*******************************************************************************/
 void searchForCEO(STOCK allStockData[]) {
-	char endLine[10];
-	fgets(endLine, 10, stdin);
-
+	
 	char inputSymbol[SYMBCHAR] = { "" };
 	char* search;
 	int found = 0;
-	printf("Enter any portion of city or state to search for companies in those jurisdictions: ");
+	printf("Enter any portion of the CEO name to search for: ");
 	fgets(inputSymbol, SYMBCHAR, stdin);
 	inputSymbol[strlen(inputSymbol) - 1] = '\0';
 
@@ -449,26 +478,91 @@ void searchForCEO(STOCK allStockData[]) {
 	printf("Searching...\n");
 
 	for (size_t i = 0; i < COMPANIES; ++i) {
-		search = strstr(allStockData[i].location.city, inputSymbol);
+		search = strstr(allStockData[i].CEO.name, inputSymbol); 
 
 		if (search) {
-			printf("Company found! %s\n", allStockData[i].location.city);
+			printf("CEO found! %s\n", allStockData[i].CEO.name); 
 			found = 1;
-		}
-		search = strstr(allStockData[i].location.state, inputSymbol);
-		if (search) {
-			printf("Company found! %s\n", allStockData[i].location.state);
-			found = 1;
-		}
+		}		
 	}
 
 	if (!found) {
-		printf("No company matches %s\n", inputSymbol);
+		printf("No CEO found with %s in their name.\n", inputSymbol);
+	}
+} // End searchForCEO()
+
+/*******************************************************************************
+	Function: searchCEOCompRange()
+	Description: Takes user input for upper and lower comp ranges, determines
+	which CEOs exist within that range. Displays results.
+	Parameters: STOCK allStockData[]
+	Return: ---
+*******************************************************************************/
+void searchCEOCompRange(STOCK allStockData[]) {
+	int upperLimit = 0;
+	int lowerLimit = 0;
+	int found = 0;
+
+	printf("Enter a lower comp limit: ");
+	scanf("%d", &lowerLimit);
+	printf("Enter an upper comp limit: ");
+	scanf("%d", &upperLimit);
+
+	for (size_t i = 0; i < COMPANIES; ++i) {
+
+		if (allStockData[i].CEO.totalComp <= upperLimit && allStockData[i].CEO.totalComp >= lowerLimit) {
+			found++;
+			if (found == 1) { // Print header once
+				printf("%-20s%-20s\n", "CEO Name", "Company");
+			}
+			printf("%-20s%-20s\n", allStockData[i].CEO.name, allStockData[i].stockName); 
+		}
 	}
 
-}
+	if (!found) { 
+		printf("No CEOs have a total comp package in that range\n");
+	}
+} // End searchCEOCompRange()
 
-// decomposed function to print all stock data, int i, if i == i, print that specific stock data
+/*******************************************************************************
+	Function: highestCEOcomp()
+	Description: Determines which CEO has highest comp, displays results.
+	Parameters: STOCK allStockData[]
+	Return: ---
+*******************************************************************************/
+void highestCEOcomp(STOCK allStockData[]) {
+	int highest = 0;
+	int j = 0;
+	
+	for (size_t i = 0; i < COMPANIES; ++i) {		
+		if (allStockData[i].CEO.totalComp > highest) {  
+			highest = allStockData[i].CEO.totalComp; 
+			j = i;
+		}
+	}
+	printf("%s hast the highest comp at %d\n", allStockData[j].CEO.name, allStockData[j].CEO.totalComp);
+} // End highestCEOcomp()
+
+/*******************************************************************************
+	Function: highestCEOcomp()
+	Description: Determines which CEO has highest comp, displays results.
+	Parameters: STOCK allStockData[]
+	Return: ---
+*******************************************************************************/
+void highestCEOcomp(STOCK allStockData[]) {
+	int highest = 0;
+	int j = 0;
+
+	for (size_t i = 0; i < COMPANIES; ++i) {
+		if (allStockData[i].CEO.totalComp > highest) {
+			highest = allStockData[i].CEO.totalComp;
+			j = i;
+		}
+	}
+	printf("%s hast the highest comp at %d\n", allStockData[j].CEO.name, allStockData[j].CEO.totalComp);
+} // End highestCEOcomp()
+
+
 
 /*******************************************************************************
 	Function: displayProgramHeader()
