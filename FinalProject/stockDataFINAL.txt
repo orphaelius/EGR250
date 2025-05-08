@@ -1,0 +1,80 @@
+Charlotte
+NC
+Brian T. Moynihan
+32000000
+Bank of American Corp
+BAC
+16.05,37.25
+25
+Oklahoma City
+OK
+Domenic Dell'Osso
+800000
+Chesapeake Energy Corp
+CHK
+6.35,84.58
+50
+Boston
+MA
+H. Lawrence Culp Jr.
+27000000
+General Electric Co
+GE
+28.85,89.73
+50
+San Francisco
+CA
+Charles W. Scharf
+24500000
+Wells Fargo & Co
+WFC
+44.54,45.91
+100
+Birmingham
+AL
+John M. Turner Jr.
+6917887
+Regions Financial Corp
+RF
+10.22,21.57
+40
+Phoenix
+AZ
+Richard Adkerson
+17000000
+Freeport-McMoRan Inc
+FCX
+9.72,41.72
+20
+Redmond
+WA
+Satya Narayana Nadella
+50000000
+Microsoft Corp
+MSFT
+57.72,279.87
+25
+Menlo Park
+CA
+Mark Zuckerberg
+25300000
+Facebook Inc
+FB
+128.47,186.29
+10
+New York City
+NY
+Jane Fraser
+22500000
+Citigroup Inc
+C
+48.60,51.16
+200
+Cupertino
+CA
+Tim Cook
+99000000
+Apple Inc
+AAPL
+117.55,162.84
+10
