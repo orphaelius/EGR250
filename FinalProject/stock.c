@@ -2,12 +2,12 @@
 
 							// STOCK PORTFOLIO //
 
-	This program is a simple cumulative exercise to showcase the bulk of the 
-	subject material taught during the 2025 Spring Semester of EGR 250. The 
+	This program is a simple cumulative exercise to showcase the bulk of the
+	subject material taught during the 2025 Spring Semester of EGR 250. The
 	premise is to read in data from an external data file and allow a user to
-	select from an array of options to interact and manipulate that data, 
+	select from an array of options to interact and manipulate that data,
 	ranging from simple console display of data tables/values to more nuanced
-	interactions like manipulating those values after reading via user input. 
+	interactions like manipulating those values after reading via user input.
 
 	Written by: Jon-Austin Tharpe
 
@@ -20,7 +20,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include "stockMenu.h" // External menu function
+#include "menu.h" // External menu function
 
 /***** PREPROC CONSTANTS *****/
 #define COMPANIES 10 // Total companies to read in
@@ -45,35 +45,35 @@ typedef struct {
 typedef struct {
 	char stockName[NAMEMAX];
 	char stockSym[SYMBCHAR];
-	char stockChangeString[NAMEMAX];  
+	char stockChangeString[NAMEMAX];
 	float stockChange[2];
 	int numShares;
 	LOCATION location;
 	CEO CEO;
 } STOCK;
 
-/***** FUNCTION PROTOTYPES *****/ 
+/***** FUNCTION PROTOTYPES *****/
 // These are mostly in sequential order of the program excluding
 // repetitive basic QOL functions which are seperated by an space
 
-int getSwitchKey(int* switchKey);  
+int getSwitchKey(int* switchKey);
 void readStockData(STOCK allStockData[]);
-void displayAllData(STOCK allStockData[]); 
+void displayAllData(STOCK *allStockData);
 void displaySingleStockdata(STOCK allStockData[], int i);
 void displayCEOinfo(STOCK allStockData[]);
 void searchStockBySymbol(STOCK allStockData[]);
 void searchPortionStockName(STOCK allStockData[]);
-void displayHigherPrice(STOCK allStockData[]); 
+void displayHigherPrice(STOCK allStockData[]);
 void displayLowerValue(STOCK allStockData[]);
-void displayHigherValue(STOCK allStockData[]); 
+void displayHigherValue(STOCK allStockData[]);
 void displayIncreaseDecrease(STOCK allStockData[]);
 void displayPortfolioValue(STOCK allStockData[]);
 void searchByLocation(STOCK allStockData[]);
-void searchForCEO(STOCK allStockData[]);  
-void searchCEOCompRange(STOCK allStockData[]); 
+void searchForCEO(STOCK allStockData[]);
+void searchCEOCompRange(STOCK allStockData[]);
 void highestCEOcomp(STOCK allStockData[]);
-void lowestCEOcomp(STOCK allStockData[]); 
-void replaceCEO(STOCK allStockData[]); 
+void lowestCEOcomp(STOCK allStockData[]);
+void replaceCEO(STOCK allStockData[]);
 
 void displayProgramHeader();
 void printHeaderLines();
@@ -88,56 +88,54 @@ void displayComma(int n);
 *******************************************************************************/
 int main(void) {
 	STOCK allStockData[COMPANIES]; // Array of structures
-	STOCK ptr; 
 	int switchKey = 0; // Used for menu navigation
-
+	
 	displayProgramHeader(); // Displays small program header
 	readStockData(allStockData); // Reads data from data file
-	
-	
+
 	printf("M E N U  O P T I O N S:\n");
 	printHeaderLines();
-	
+
 	// Shows menu
 	showMenu();
-	 
+
 	// Main loop, reiterates menu options eternally until user enters -1 or loses power
-	while ((switchKey = getSwitchKey(&switchKey))) {	
+	while ((switchKey = getSwitchKey(&switchKey))) {
 
 		if (switchKey == -1) {
 			printf("Exiting program...\n");
-			break; 
+			break;
 		}
 
 		switch (switchKey) {
 
 		case 1: // Displays all data
-			displayAllData(allStockData); 
+			displayAllData(allStockData);
 			break;
 		case 2: // Displays stock name, CEO, and location data
 			displayCEOinfo(allStockData);
 			break;
 
 		case 3: // Search for stock by symbol
-			rinsePalate();  
-			searchStockBySymbol(allStockData);			
+			rinsePalate();
+			searchStockBySymbol(allStockData);
 			break;
 
 		case 4: // Search for portion of any stock/company name
 			rinsePalate();
-			searchPortionStockName(allStockData); 
+			searchPortionStockName(allStockData);
 			break;
 
 		case 5: // Display stocks that have a higher current price than user entry			
-			displayHigherPrice(allStockData);  
+			displayHigherPrice(allStockData);
 			break;
 
 		case 6: // Display stocks that have diminished in value since purchase
-			displayLowerValue(allStockData);  
+			displayLowerValue(allStockData);
 			break;
 
 		case 7: // Display stocks that have increased in value since purchase
-			displayHigherValue(allStockData);  
+			displayHigherValue(allStockData);
 			break;
 
 		case 8: // Display stock symbols and value change by percentage since purchase
@@ -145,20 +143,20 @@ int main(void) {
 			break;
 
 		case 9: // Display portfolio value by individual stock and total sum
-			displayPortfolioValue(allStockData); 
+			displayPortfolioValue(allStockData);
 			break;
 
 		case 10: // Search for stocks by location data			
-			searchByLocation(allStockData);   
+			searchByLocation(allStockData);
 			break;
 
 		case 11: // Search by CEO name
 			rinsePalate();
-			searchForCEO(allStockData);  
+			searchForCEO(allStockData);
 			break;
 
 		case 12: // Search by CEO comp ranges
-			searchCEOCompRange(allStockData);  
+			searchCEOCompRange(allStockData);
 			break;
 
 		case 13: // display CEO who has the greatest total comp
@@ -166,20 +164,20 @@ int main(void) {
 			break;
 
 		case 14: // Display the CEO with the lowest total comp
-			lowestCEOcomp(allStockData);  
+			lowestCEOcomp(allStockData);
 			break;
 
 		case 15: // Replace CEO name and total comp package
 			rinsePalate();
-			replaceCEO(allStockData); 
-			break;				
+			replaceCEO(allStockData);
+			break;
 		}
 
 		printHeaderLines();
 		printf("M E N U  O P T I O N S:\n");
 		printHeaderLines();
-		showMenu();		
-	}		 
+		showMenu();
+	}
 } // End main()
 
 /*******************************************************************************
@@ -204,7 +202,7 @@ int getSwitchKey(int* switchKey) {
 void readStockData(STOCK allStockData[]) {
 	FILE* infile = fopen("stockdataFINAL.txt", "r");
 	char endOfLine[10];
-	
+
 	for (size_t i = 0; i < COMPANIES; ++i) {
 
 		// Get city name, null terminate
@@ -221,8 +219,7 @@ void readStockData(STOCK allStockData[]) {
 
 		// Scan totalComp
 		fscanf(infile, "%d", &allStockData[i].CEO.totalComp);
-		rinsePalate();
-		//fgets(endOfLine, 10, infile);
+		fgets(endOfLine, 10, infile);
 
 		// Get stock name, null terminate
 		fgets(allStockData[i].stockName, NAMEMAX, infile);
@@ -245,36 +242,36 @@ void readStockData(STOCK allStockData[]) {
 
 		// Get number shares
 		fscanf(infile, "%d", &allStockData[i].numShares);
-		rinsePalate();
-		//fgets(endOfLine, 10, infile);
+		fgets(endOfLine, 10, infile);
 	}
 } // End readStockData()
 
 /*******************************************************************************
 	Function: displayAllData()
-	Description: Displays all data from data file in clean tabular output
-	Parameters: STOCK allStockData[]
+	Description: Displays all data from data file in clean tabular output using
+	pass by reference
+	Parameters: Pointer to STOCK allStockData
 	Return: ---
 *******************************************************************************/
-void displayAllData(STOCK allStockData[]) {
+void displayAllData(STOCK *allStockData) {
 	int n = 0;
 	printHeaderLines();
-	printf("%-26s %-17s %-9s %-26s %-18s %-22s %-20s %-23s %-20s\n", "Company", 
-		"City", "State", "CEO", "CEO Total Comp", "Stock Abbreviation", 
+	printf("%-26s %-17s %-9s %-26s %-18s %-22s %-20s %-23s %-20s\n", "Company",
+		"City", "State", "CEO", "CEO Total Comp", "Stock Abbreviation",
 		"Last Stock Price", "Current Stock Price", "Number of Shares");
 	printHeaderLines();
 	for (size_t i = 0; i < COMPANIES; ++i) {
-		printf("%-27s", allStockData[i].stockName);
-		printf("%-18s", allStockData[i].location.city);
-		printf("%-10s", allStockData[i].location.state);
-		printf("%-27s", allStockData[i].CEO.name);
-		n = allStockData[i].CEO.totalComp;		
-		displayComma(n); 
+		printf("%-27s", (allStockData + i)->stockName);
+		printf("%-18s", (allStockData + i)->location.city);
+		printf("%-10s", (allStockData + i)->location.state);
+		printf("%-27s", (allStockData + i)->CEO.name);
+		n = (allStockData + i )->CEO.totalComp;
+		displayComma(n);
 		printf("%-9c", ' ');
-		printf("%-23s", allStockData[i].stockSym);
-		printf("$%-21.2f$%-24.2f", allStockData[i].stockChange[0], 
-			allStockData[i].stockChange[1]);
-		printf("%-20d", allStockData[i].numShares);
+		printf("%-23s", (allStockData + i)->stockSym);
+		printf("$%-21.2f$%-24.2f", (allStockData + i)->stockChange[0],
+			(allStockData + i )->stockChange[1]);
+		printf("%-20d", (allStockData + i)->numShares);
 		puts("");
 	}
 } // End displayAllData()
@@ -301,14 +298,14 @@ void displaySingleStockdata(STOCK allStockData[], int i) {
 	printf("%-27s", allStockData[i].CEO.name);
 	n = allStockData[i].CEO.totalComp;
 	displayComma(n);
-	printf("%-9c", ' ');	
+	printf("%-9c", ' ');
 	printf("%-23s", allStockData[i].stockSym);
 	printf("$%-21.2f$%-24.2f", allStockData[i].stockChange[0],
 		allStockData[i].stockChange[1]);
 	printf("%-20d", allStockData[i].numShares);
 	puts("");
 	puts("");
-	
+
 } // End displaySingleStockData()
 
 /*******************************************************************************
@@ -339,7 +336,7 @@ void displayCEOinfo(STOCK allStockData[]) {
 *******************************************************************************/
 void searchStockBySymbol(STOCK allStockData[]) {
 	puts("");
-	char inputSymbol[SYMBCHAR] = { "" };	
+	char inputSymbol[SYMBCHAR] = { "" };
 	int found = 0;
 	printf("Enter the stock symbol: ");
 	fgets(inputSymbol, SYMBCHAR, stdin);
@@ -352,7 +349,7 @@ void searchStockBySymbol(STOCK allStockData[]) {
 
 	printf("Searching...\n");
 
-	for (size_t i = 0; i < COMPANIES; ++i) {		
+	for (size_t i = 0; i < COMPANIES; ++i) {
 		if (strcmp(inputSymbol, allStockData[i].stockSym) == 0) {
 			printf("%s is in your portfolio!\n", allStockData[i].stockSym);
 			found = 1;
@@ -372,7 +369,7 @@ void searchStockBySymbol(STOCK allStockData[]) {
 	Return: ---
 *******************************************************************************/
 void searchPortionStockName(STOCK allStockData[]) {
-	puts("");  
+	puts("");
 	char inputStockName[NAMEMAX] = { "" };
 	char* search;
 	int found = 0;
@@ -386,7 +383,6 @@ void searchPortionStockName(STOCK allStockData[]) {
 		search = strstr(allStockData[i].stockName, inputStockName);
 
 		if (search) {
-			//printf("Company found!\n");
 			displaySingleStockdata(allStockData, i);
 			found = 1;
 		}
@@ -404,7 +400,7 @@ void searchPortionStockName(STOCK allStockData[]) {
 	Return: ---
 *******************************************************************************/
 void displayHigherPrice(STOCK allStockData[]) {
-	puts(""); 
+	puts("");
 	int inputHigh = 0;
 	int found = 0;
 	printf("Enter a stock value in USD and I will return all stocks with a higher current value: ");
@@ -414,14 +410,14 @@ void displayHigherPrice(STOCK allStockData[]) {
 
 		if (allStockData[i].stockChange[1] > inputHigh) {
 			found++;
-			if (found == 1) { // Print match message once
+			if (found == 1) { // Print message once
 				printf("%s", "Stocks:\n");
 			}
 			printf("%s\n", allStockData[i].stockName);
 		}
 	}
 
-	if (!found) { 
+	if (!found) {
 		printf("No stocks are currently higher than that value.\n");
 	}
 
@@ -443,9 +439,9 @@ void displayLowerValue(STOCK allStockData[]) {
 			found++;
 			if (found == 1) { // Print message once
 				printf("Stocks that have lost value since purchase:\n");
-				printf("%-20s%-20s%-20s", "Stock", "Purchase Price", "Current Value"); 
-			}			
-			printf("%-20s%-20f%-20f\n", allStockData[i].stockName, 
+				printf("%-20s%-20s%-20s", "Stock", "Purchase Price", "Current Value");
+			}
+			printf("%-20s%-20f%-20f\n", allStockData[i].stockName,
 				allStockData[i].stockChange[0], allStockData[i].stockChange[1]);
 		}
 	}
@@ -473,9 +469,9 @@ void displayHigherValue(STOCK allStockData[]) {
 			if (found == 1) { // Print message once
 				printHeaderLines();
 				printf("%-26s%-20s%-20s\n", "Stock", "Purchase Price", "Current Value");
-				printHeaderLines();    
+				printHeaderLines();
 			}
-			printf("%-26s$%-20.2f$%-20.2f\n", allStockData[i].stockName, 
+			printf("%-26s$%-20.2f$%-20.2f\n", allStockData[i].stockName,
 				allStockData[i].stockChange[0], allStockData[i].stockChange[1]);
 		}
 	}
@@ -500,8 +496,8 @@ void displayIncreaseDecrease(STOCK allStockData[]) {
 	printf("%-20s%-20s\n", "Stock Symbol", "Percent Change (%)");
 	printHeaderLines();
 	for (size_t i = 0; i < COMPANIES; ++i) {
-		percentChange = (allStockData[i].stockChange[1] - 
-			allStockData[i].stockChange[0]) / allStockData[i].stockChange[0]; 
+		percentChange = (allStockData[i].stockChange[1] -
+			allStockData[i].stockChange[0]) / allStockData[i].stockChange[0];
 		percentChange *= 100;
 		printf("%-20s%-20.1f%\n", allStockData[i].stockSym, percentChange);
 	}
@@ -524,10 +520,10 @@ void displayPortfolioValue(STOCK allStockData[]) {
 	for (size_t i = 0; i < COMPANIES; ++i) {
 		tempSum = allStockData[i].stockChange[1] * allStockData[i].numShares;
 		totalSum += tempSum;
-		printf("%-26s%-20d$%-20.2f\n", allStockData[i].stockName, allStockData[i].numShares, tempSum); 
+		printf("%-26s%-20d$%-20.2f\n", allStockData[i].stockName, allStockData[i].numShares, tempSum);
 	}
 
-	printf("%s%$%.2f\n","Total portfolio value: ", totalSum); 
+	printf("%s%$%.2f\n", "Total portfolio value: ", totalSum);
 } // End displayPortfolioValue()
 
 /*******************************************************************************
@@ -539,8 +535,6 @@ void displayPortfolioValue(STOCK allStockData[]) {
 *******************************************************************************/
 void searchByLocation(STOCK allStockData[]) {
 	puts("");
-	//char endLine[10];
-	//fgets(endLine, 10, stdin);
 	rinsePalate();
 
 	char inputLocation[CITYCHAR] = { "" };
@@ -558,10 +552,10 @@ void searchByLocation(STOCK allStockData[]) {
 		if (search) {
 			printf("Company found! %s\n", allStockData[i].stockName);
 			found = 1;
-		}	
+		}
 	}
 
-	for (size_t i = 0; i < COMPANIES; ++i) {		
+	for (size_t i = 0; i < COMPANIES; ++i) {
 		// Converts input to uppercase to properly use strcmp() to compare state abbreviations
 		for (size_t i = 0; i < strlen(inputLocation); ++i) {
 			inputLocation[i] = toupper(inputLocation[i]);
@@ -597,7 +591,7 @@ void searchForCEO(STOCK allStockData[]) {
 	printf("Searching...\n");
 
 	for (size_t i = 0; i < COMPANIES; ++i) {
-		search = strstr(allStockData[i].CEO.name, inputSymbol); 
+		search = strstr(allStockData[i].CEO.name, inputSymbol);
 		if (search) {
 			found++;
 			if (found == 1) { // Print once
@@ -606,7 +600,7 @@ void searchForCEO(STOCK allStockData[]) {
 			printf("%s\n", allStockData[i].CEO.name);
 		}
 	}
-	
+
 	if (!found) {
 		printf("No CEO found with %s in their name.\n", inputSymbol);
 	}
@@ -637,7 +631,7 @@ void searchCEOCompRange(STOCK allStockData[]) {
 			if (found == 1) { // Print header once
 				printHeaderLines();
 				printf("%-26s%-20s\n", "CEO Name", "Company");
-				printHeaderLines(); 
+				printHeaderLines();
 			}
 			printf("%-26s%-20s\n", allStockData[i].CEO.name, allStockData[i].stockName);
 		}
@@ -664,12 +658,12 @@ void highestCEOcomp(STOCK allStockData[]) {
 		if (allStockData[i].CEO.totalComp > highest) {
 			highest = allStockData[i].CEO.totalComp;
 			j = i;
-			comp = allStockData[i].CEO.totalComp; 
+			comp = allStockData[i].CEO.totalComp;
 		}
 	}
 
 	printf("%s has the highest comp at ", allStockData[j].CEO.name);
-	displayComma(comp); 
+	displayComma(comp);
 	puts("");
 } // End highestCEOcomp()
 
@@ -681,20 +675,20 @@ void highestCEOcomp(STOCK allStockData[]) {
 *******************************************************************************/
 void lowestCEOcomp(STOCK allStockData[]) {
 	puts("");
-	int lowest = allStockData[0].CEO.totalComp; 
+	int lowest = allStockData[0].CEO.totalComp;
 	int j = 0;
 	int comp = 0;
 
-	for (size_t i = 0; i < COMPANIES; ++i) { 
+	for (size_t i = 0; i < COMPANIES; ++i) {
 
-		if (allStockData[i].CEO.totalComp < lowest) {  
-			lowest = allStockData[i].CEO.totalComp; 
+		if (allStockData[i].CEO.totalComp < lowest) {
+			lowest = allStockData[i].CEO.totalComp;
 			j = i;
-			comp = allStockData[j].CEO.totalComp;  
+			comp = allStockData[j].CEO.totalComp;
 		}
 	}
-	printf("%s has the lowest comp at ", allStockData[j].CEO.name); 
-	displayComma(comp); 
+	printf("%s has the lowest comp at ", allStockData[j].CEO.name);
+	displayComma(comp);
 	puts("");
 } // End lowesttCEOcomp()
 
@@ -705,22 +699,22 @@ void lowestCEOcomp(STOCK allStockData[]) {
 	Parameters: STOCK allStockData[]
 	Return: ---
 *******************************************************************************/
-void replaceCEO(STOCK allStockData[]) { 
+void replaceCEO(STOCK allStockData[]) {
 	puts("");
 	char endOfLine[10];
-	char stockSym[SYMBCHAR] = { "" }; 
+	char stockSym[SYMBCHAR] = { "" };
 	char newCEO[NAMEMAX] = { "" };
 	int newComp = 0;
-	int confirmation = 0;  
+	int confirmation = 0;
 	int found = 0;
 
 	printf("Enter the stock symbol to replace the CEO and comp: ");
-	fgets(stockSym, SYMBCHAR, stdin); 
+	fgets(stockSym, SYMBCHAR, stdin);
 	stockSym[strlen(stockSym) - 1] = '\0';
 
 	// Converts input to uppercase to properly use strcmp()
 	for (size_t i = 0; i < strlen(stockSym); ++i) {
-		stockSym[i] = toupper(stockSym[i]); 
+		stockSym[i] = toupper(stockSym[i]);
 	}
 
 	for (size_t i = 0; i < COMPANIES; ++i) {
@@ -728,22 +722,21 @@ void replaceCEO(STOCK allStockData[]) {
 		if (strcmp(stockSym, allStockData[i].stockSym) == 0) {
 			found = 1;
 			printf("Found %s\n", stockSym);
-			printf("Enter (1) to confirm replacement of %s or (0) to return: ", allStockData[i].CEO.name);   
+			printf("Enter (1) to confirm replacement of %s or (0) to return: ", allStockData[i].CEO.name);
 			scanf("%d", &confirmation);
 
 			if (confirmation) {
-				rinsePalate(); 
-				//fgets(endOfLine, 10, stdin);  
+				rinsePalate();
 				printf("Enter the new CEO name: ");
 				fgets(newCEO, NAMEMAX, stdin);
-				newCEO[strlen(newCEO) - 1] = '\0';  
-				
-				strcpy(allStockData[i].CEO.name, newCEO);   
-				printf("new ceo of %s is %s\n", allStockData[i].stockSym, allStockData[i].CEO.name); 
-								
-				printf("Enter the new comp: ");
+				newCEO[strlen(newCEO) - 1] = '\0';
+
+				strcpy(allStockData[i].CEO.name, newCEO);
+				printf("new ceo of %s is %s\n", allStockData[i].stockSym, allStockData[i].CEO.name);
+
+				printf("Enter the new comp in USD: ");
 				scanf("%d", &newComp);
-				allStockData[i].CEO.totalComp = newComp; 
+				allStockData[i].CEO.totalComp = newComp;
 
 				printf("new comp for %s is %d\n", allStockData[i].CEO.name, allStockData[i].CEO.totalComp);
 			}
@@ -751,8 +744,8 @@ void replaceCEO(STOCK allStockData[]) {
 			if (!confirmation) {
 				printf("Exiting menu option...\n");
 				return;
-			}			
-		}		
+			}
+		}
 	}
 
 	if (!found) {
@@ -773,7 +766,7 @@ void displayProgramHeader() {
 		"---------------------------------------------------------------------------",
 		"M Y  T R A D I N G  P O R T F O L I O",
 		"-----------------------------------------------------------------------\n");
-	puts(""); 
+	puts("");
 	printHeaderLines();
 } // End displayProgramHeader()
 
@@ -794,7 +787,7 @@ void printHeaderLines() {
 	Function: displayComma()
 	Description: Displays comma between 3-digit groups. Thanks to paxdiablo via
 	Stackoverflow for posting this solution:
-	stackoverflow.com/questions/1449805/how-to-format-a-number-using-comma-as-thousands-separator-in-c 
+	stackoverflow.com/questions/1449805/how-to-format-a-number-using-comma-as-thousands-separator-in-c
 	Parameters: An integer
 	Return: ---
 *******************************************************************************/
